@@ -6,7 +6,7 @@ import { performance } from 'node:perf_hooks'
 import { startAttestorAndServer } from '#src/benchmarks/attestor-bench.ts'
 import { AttestorClient, createClaimOnAttestor } from '#src/client/index.ts'
 import { decryptTranscript } from '#src/server/index.ts'
-//import { assertValidClaimSignatures } from '#src/utils/claims.ts'
+import { assertValidClaimSignatures } from '#src/utils/claims.ts'
 import { getTranscriptString } from '#src/utils/generics.ts'
 import { logger } from '#src/utils/logger.ts'
 
@@ -58,7 +58,7 @@ async function main() {
 	if(result.error) {
 		logger.error({ err: result.error }, 'createClaim failed')
 	} else {
-		//await assertValidClaimSignatures(result)
+		await assertValidClaimSignatures(result)
 		logger.info({ ms }, 'prover bench success')
 
 		const transcript = result.request!.transcript

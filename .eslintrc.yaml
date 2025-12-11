@@ -12,4 +12,7 @@ rules:
     - allowSameFolder: false
       rootDir: ''
   #'@typescript-eslint/no-floating-promises': 'error'
-      
+settings:
+  import/resolver:
+    typescript:
+      project: ./tsconfig.json      
