@@ -16,8 +16,8 @@ npm run run:tsc -- src/benchmarks/run.ts
 
 ### Bandwidth sweep (25ms latency, 1KB req, 4KB res)
 
-```
-# defaults: iface=lo, tls=TLS1_3, kind=snarkjs, bandwidths=10/25/50/100/200 Mbps
+``` bash
+# defaults: iface=lo, tls=TLS1_3, kind=snarkjs, bandwidths=10/50/100/250/1000 Mbps, runsPerBandwidth=10
 npm run run:tsc -- src/benchmarks/prover-bench-bandwidth.ts [TLS_VERSION] [gnark|snarkjs|wasm]
 
 # optional overrides
@@ -26,8 +26,8 @@ BENCH_IFACE=lo BENCH_LATENCY_MS=25 BENCH_REQUEST_BYTES=1024 BENCH_RESPONSE_BYTES
 
 ### Latency sweep (1 Gbps, 1KB req, 4KB res)
 
-```
-# defaults: iface=lo, bandwidth=1000 Mbps, latencies=10/25/50/100/200 ms, runsPerLatency=5
+``` bash
+# defaults: iface=lo, bandwidth=1000 Mbps, latencies=10/25/50/100/200 ms, runsPerLatency=10
 npm run run:tsc -- src/benchmarks/prover-bench-latency.ts [TLS_VERSION] [gnark|snarkjs|wasm]
 
 # optional overrides
@@ -36,8 +36,8 @@ BENCH_IFACE=lo BENCH_BANDWIDTH_MBPS=1000 BENCH_LATENCIES_MS=10,25,50,100,200 BEN
 
 ### Response-size sweep (200 Mbps, 10 ms, 2KB req)
 
-```
-# defaults: response sizes 1KB/2KB/4KB/8KB/16KB/32KB/64KB/128KB, runsPerResponse=10, warmup=3
+```bash
+# defaults: response sizes 1KB/2KB/4KB/8KB/16KB/32KB/64KB/128KB, runsPerResponse=10
 npm run run:tsc -- src/benchmarks/prover-bench-response.ts [TLS_VERSION] [gnark|snarkjs|wasm]
 
 # optional overrides
