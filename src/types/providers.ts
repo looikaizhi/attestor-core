@@ -172,12 +172,32 @@ export type ProofGenerationStep =
      * Only computed after the first block
      * is done
      * */
-    approxTimeLeftS?: number
+    approxTimeLeftMs?: number
   }
   | {
     // wait for the attestor to verify
     // said proofs & receipt
     name: 'waiting-for-verification'
+  }
+  | {
+    name: 'tls-handshake'
+    ms?: number
+  }
+  | {
+    name: 'request-and-response-phase'
+    ms?: number
+  }
+  | {
+    name: 'zk-generate'
+    ms?: number
+  }
+  | {
+    name: 'zk-proof-byteLength'
+    byteLength?: number
+  }
+  | {
+    name: 'zk-verify-attestor'
+    ms?: number
   }
 
 type StepData = {

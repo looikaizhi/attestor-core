@@ -31,7 +31,7 @@ async function main() {
 	})
 	await client.waitForInit()
 
-	const user = 'bench-user'
+	const user = 'adhiraj'
 	const body = 'a'.repeat(REQUEST_SIZE)
 	const t0 = performance.now()
 	const result = await createClaimOnAttestor({
@@ -44,7 +44,7 @@ async function main() {
 			responseRedactions: [{ jsonPath: 'payload' }],
 			responseMatches: [{ type: 'contains', value: '*' }],
 			additionalClientOptions: {
-				verifyServerCertificate: false,
+				verifyServerCertificate: true,
 				supportedProtocolVersions: [TLS_VERSION as any],
 			} as any,
 		},

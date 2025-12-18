@@ -1,4 +1,7 @@
 export * from './attestor-bench.ts'
+export * from './prover-bench-bandwidth.ts'
+export * from './prover-bench-response.ts'
+export * from './prover-bench-latency.ts'
 export * from './prover-bench.ts'
 export * from './server-bench.ts'
 export * from './run.ts'

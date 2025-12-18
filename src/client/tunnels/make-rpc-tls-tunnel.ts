@@ -19,6 +19,7 @@ type ExtraTLSOptions = {
 	 */
 	connect(initMessages: Partial<RPCMessage>[]): IAttestorClient
 	tlsOpts?: TLSConnectionOptions
+	onStep?: (step: { name: string, ms?: number}) => void
 }
 
 type TLSTunnelProperties = {
@@ -32,7 +33,7 @@ type TLSTunnelProperties = {
 export const makeRpcTlsTunnel: MakeTunnelFn<ExtraTLSOptions, TLSTunnelProperties> = async({
 	onMessage, onClose,
 	tlsOpts, request,
-	connect, logger
+	connect, logger, onStep
 }) => {
 	const transcript: TLSTunnelProperties['transcript'] = []
 	const tunnelId = request.id || generateTunnelId()
@@ -46,12 +47,16 @@ export const makeRpcTlsTunnel: MakeTunnelFn<ExtraTLSOptions, TLSTunnelProperties
 		handshakeReject = reject
 	})
 
+	const t0 = performance.now()
+
 	const tls = makeTLSClient({
 		host: request.host!,
 		...tlsOpts,
 		logger,
 		onHandshake() {
 			handshakeResolve?.()
+			const handShakeMs = performance.now() - t0
+			onStep?.({ name: 'tls-handshake', ms: handShakeMs })
 		},
 		onApplicationData(plaintext) {
 			return onMessage?.(plaintext)

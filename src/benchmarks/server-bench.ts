@@ -60,7 +60,7 @@ export function createMockServer(port: number) {
 
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		function endWithJson(status: number, json: any) {
-			const responseLength = parseInt(req.headers['responseLength'] as string)
+			const responseLength = parseInt(req.headers['responselength'] as string)
 			const sizeBytes = Math.max(1, responseLength)
 			const bodyObj = { ...json, payload: 'x'.repeat(sizeBytes) }
 			const body = JSON.stringify(bodyObj)

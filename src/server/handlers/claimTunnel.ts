@@ -60,17 +60,20 @@ export const claimTunnel: RPCHandler<'claimTunnel'> = async(
 			?.startTransaction('assertValidClaimRequest', { childOf: tx })
 
 		try {
+			const verifyStart = performance.now()
 			const claim = await assertValidClaimRequest(
 				claimRequest,
 				client.metadata,
 				logger
 			)
+			const verifyMs = performance.now() - verifyStart
 			res.claim = {
 				...claim,
 				identifier: getIdentifierFromClaimInfo(claim),
 				// hardcode for compatibility with V1 claims
 				epoch: 1
 			}
+			res.verifyMs = verifyMs
 		} catch(err) {
 			assertTx?.setOutcome('failure')
 			throw err

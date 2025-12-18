@@ -382,8 +382,9 @@ message ClaimTunnelResponse {
 	oneof result {
 		ProviderClaimData claim = 2;
 		ErrorData error = 3;
+		double verifyMs = 4;
 	}
-	Signatures signatures = 4;
+	Signatures signatures = 5;
 
 	message Signatures {
 		/**

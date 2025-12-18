@@ -203,6 +203,7 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 				resParser.streamEnded()
 			} catch{ }
 		},
+		onStep,
 	})
 
 	const {
@@ -213,6 +214,8 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 		redactionMode = 'zk'
 		logger.info('TLS1.2 detected, defaulting to zk redaction mode')
 	}
+
+	const t0 = performance.now()
 
 	const {
 		redactions,
@@ -266,6 +269,8 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 	await waitForAllData
 	await tunnel.close()
 
+	const requestAndResponseTime = performance.now() - t0
+	onStep?.({ name: 'request-and-response-phase', ms: requestAndResponseTime })
 	logger.info('session closed, processing response')
 
 	// update the response selections
@@ -315,6 +320,9 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 
 	const claimTunnelBytes = ClaimTunnelRequest
 		.encode(claimTunnelReq).finish()
+	const byteLength = claimTunnelBytes.byteLength
+	onStep?.({ name: 'zk-proof-byteLength', byteLength: byteLength })
+
 	const requestSignature = await signatureAlg
 		.sign(claimTunnelBytes, ownerPrivateKey)
 	claimTunnelReq.signatures = { requestSignature }
@@ -322,6 +330,7 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 	const result = await client!.rpc('claimTunnel', claimTunnelReq)
 
 	logger.info({ success: !!result.claim }, 'recv claim response')
+	onStep?.({ name: 'zk-verify-attestor', ms: result.verifyMs })
 
 	return result
 
@@ -429,6 +438,7 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 		await addServerSideReveals()
 
 		const startMs = Date.now()
+		const t0 = performance.now()
 		const revealedMessages = await preparePacketsForReveal(
 			tunnel.transcript,
 			revealMap,
@@ -443,12 +453,14 @@ async function _createClaimOnAttestor<N extends ProviderName>(
 						name: 'generating-zk-proofs',
 						proofsDone: done,
 						proofsTotal: total,
-						approxTimeLeftS: Math.round(timeLeftMs / 1000),
+						approxTimeLeftMs: timeLeftMs,
 					})
 				},
 				...zkOpts,
 			}
 		)
+		const zkGenerateMs = performance.now() - t0
+		onStep?.({ name: 'zk-generate', ms: zkGenerateMs })
 
 		return revealedMessages
 	}
